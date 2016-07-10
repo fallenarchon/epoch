@@ -26,6 +26,9 @@ func main() {
 
 	if *date != "" {
 		t, err = time.Parse("01/02/2006 15:04:05", *date)
+		if err != nil {
+			t, err = time.Parse("01/02/2006 15:04:05.000", *date)
+		}
 		checkErr(err)
 	} else {
 		info, err := os.Stdin.Stat()

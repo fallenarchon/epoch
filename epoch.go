@@ -17,19 +17,26 @@ func checkErr(err error) {
 
 func main() {
 	stripHumanReadable := flag.Bool("s", false, "Strips human readable date info")
+	date := flag.String("d", "", "Supply date to find epoch milliseconds <MM/DD/YYYY hh:mm:ss>")
 
 	flag.Parse()
 
+	var err error
 	t := time.Now()
 
-	info, err := os.Stdin.Stat()
-	checkErr(err)
+	if *date != "" {
+		t, err = time.Parse("01/02/2006 15:04:05", *date)
+		checkErr(err)
+	} else {
+		info, err := os.Stdin.Stat()
+		checkErr(err)
 
-	//If data is being piped in, parse millis from that
-	if info.Size() > 0 {
-		t = convertStringMillisToTime(fetchInputFromPipe())
-	} else if len(flag.Args()) == 1 {
-		t = convertStringMillisToTime(flag.Arg(0))
+		//If data is being piped in, parse millis from that
+		if info.Size() > 0 {
+			t = convertStringMillisToTime(fetchInputFromPipe())
+		} else if len(flag.Args()) == 1 {
+			t = convertStringMillisToTime(flag.Arg(0))
+		}
 	}
 
 	if *stripHumanReadable {

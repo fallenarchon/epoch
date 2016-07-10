@@ -16,7 +16,7 @@ func checkErr(err error) {
 }
 
 func main() {
-	printHumanReadable := flag.Bool("h", false, "Prints human readable date")
+	stripHumanReadable := flag.Bool("s", false, "Strips human readable date info")
 
 	flag.Parse()
 
@@ -32,9 +32,10 @@ func main() {
 		t = convertStringMillisToTime(flag.Arg(0))
 	}
 
-	fmt.Printf("Epoch millis:\t%v\n", t.UnixNano()/1000000)
-
-	if *printHumanReadable {
+	if *stripHumanReadable {
+		fmt.Printf("%v\n", t.UnixNano()/1000000)
+	} else {
+		fmt.Printf("Epoch millis:\t%v\n", t.UnixNano()/1000000)
 		utc := t.In(time.UTC)
 		fmt.Printf("UTC:\t%v\n", formatTime(&utc))
 		fmt.Printf("Local:\t%v\n", formatTime(&t))

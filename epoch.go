@@ -17,6 +17,7 @@ func checkErr(err error) {
 
 func main() {
 	stripHumanReadable := flag.Bool("s", false, "Strips human readable date info")
+	display12hour := flag.Bool("12", false, "Displays 12 hour clock instead of 24 hour clock")
 	date := flag.String("d", "", "Supply date to find epoch milliseconds <MM/DD/YYYY hh:mm:ss>")
 
 	flag.Parse()
@@ -47,8 +48,8 @@ func main() {
 	} else {
 		fmt.Printf("Epoch millis:\t%v\n", t.UnixNano()/1000000)
 		utc := t.In(time.UTC)
-		fmt.Printf("UTC:\t%v\n", formatTime(&utc))
-		fmt.Printf("Local:\t%v\n", formatTime(&t))
+		fmt.Printf("UTC:\t%v\n", formatTime(&utc, *display12hour))
+		fmt.Printf("Local:\t%v\n", formatTime(&t, *display12hour))
 	}
 
 }
@@ -66,6 +67,9 @@ func convertStringMillisToTime(inputMillis string) time.Time {
 	return time.Unix(0, millis*1000000)
 }
 
-func formatTime(t *time.Time) string {
-	return t.Format("Mon Jan _2 2006 03:04:05.000 PM")
+func formatTime(t *time.Time, display12 bool) string {
+	if display12 {
+		return t.Format("Mon Jan _2 2006 03:04:05.000 PM")
+	}
+	return t.Format("Mon Jan _2 2006 15:04:05.000")
 }
